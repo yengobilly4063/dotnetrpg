@@ -4,26 +4,32 @@ using System.Threading.Tasks;
 using dotnetrpg.Dtos.Character;
 using dotnetrpg.models;
 using dotnetrpg.Services.CharacterService;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace dotnetrpg.Controllers
 {
+  [Authorize]
   [ApiController()]
   [Route("character")]
   public class CharacterController : ControllerBase
   {
 
     private readonly ICharacterService _characterService;
+    private readonly ILogger _logger;
 
-    public CharacterController(ICharacterService characterService)
+    public CharacterController(ICharacterService characterService, ILogger<CharacterController> logger)
     {
       _characterService = characterService;
+      _logger = logger;
     }
 
     [HttpGet("all")]
     public async Task<ActionResult<ServiceResponse<List<GetCharacterDto>>>> GetAllCharacters()
     {
-      return Ok(await _characterService.GetAllCharacters());
+      var userId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == "UserId").Value);
+      return Ok(await _characterService.GetAllCharacters(userId));
     }
 
     [HttpGet("{Id}")]
