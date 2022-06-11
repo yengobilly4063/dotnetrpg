@@ -17,12 +17,10 @@ namespace dotnetrpg.Controllers
   {
 
     private readonly ICharacterService _characterService;
-    private readonly ILogger _logger;
 
-    public CharacterController(ICharacterService characterService, ILogger<CharacterController> logger)
+    public CharacterController(ICharacterService characterService)
     {
       _characterService = characterService;
-      _logger = logger;
     }
 
     [HttpGet("all")]
