@@ -11,6 +11,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Swashbuckle.AspNetCore.Filters;
 using Microsoft.AspNetCore.Http;
+using dotnetrpg.Services.WeaponService;
+using dotnetrpg.Helpers.UserContext;
 
 namespace dotnetrpg
 {
@@ -42,6 +44,7 @@ namespace dotnetrpg
       });
       services.AddAutoMapper(typeof(Startup));
       services.AddScoped<ICharacterService, CharacterService>();
+      services.AddScoped<IWeaponService, WeaponService>();
       services.AddScoped<IAuthRepository, AuthRepository>();
       services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         .AddJwtBearer(options =>
@@ -55,6 +58,7 @@ namespace dotnetrpg
           };
         });
       services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+      services.AddScoped<IUserContext, UserContext>();
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

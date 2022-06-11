@@ -29,7 +29,7 @@ namespace dotnetrpg.Services.CharacterService
 
     public async Task<ServiceResponse<List<GetCharacterDto>>> GetAllCharacters()
     {
-      var dbCharacters = await _dataContext.Characters.Where(c => c.User.Id == GetUserId()).ToListAsync();
+      var dbCharacters = await _dataContext.Characters.Where(c => c.UserId == GetUserId()).ToListAsync();
       var mappedCharacterResponse = dbCharacters.Select(c => _mapper.Map<GetCharacterDto>(c)).ToList();
       return new ServiceResponse<List<GetCharacterDto>>(mappedCharacterResponse);
     }
@@ -48,7 +48,7 @@ namespace dotnetrpg.Services.CharacterService
       _dataContext.Characters.Add(resolvedCharacter);
       await _dataContext.SaveChangesAsync();
       var mappedCharacterResponse = await _dataContext.Characters
-        .Where(c => c.User.Id == GetUserId())
+        .Where(c => c.UserId == GetUserId())
         .Select(c => _mapper.Map<GetCharacterDto>(c)).ToListAsync();
       return new ServiceResponse<List<GetCharacterDto>>(mappedCharacterResponse);
     }
@@ -59,8 +59,8 @@ namespace dotnetrpg.Services.CharacterService
       try
       {
         var character = await _dataContext.Characters
-          .Include(c => c.User)
-          .Where(c => c.User.Id == GetUserId())
+          // .Include(c => c.User)
+          .Where(c => c.UserId == GetUserId())
           .FirstOrDefaultAsync(c => c.Id == updatedCharacter.Id);
 
         if (character != null)
@@ -95,7 +95,7 @@ namespace dotnetrpg.Services.CharacterService
       var serviceResponse = new ServiceResponse<GetCharacterDto>();
       try
       {
-        var character = await _dataContext.Characters.FirstOrDefaultAsync(c => c.Id == Id && c.User.Id == GetUserId());
+        var character = await _dataContext.Characters.FirstOrDefaultAsync(c => c.Id == Id && c.UserId == GetUserId());
         if (character != null)
         {
           _dataContext.Remove(character);
