@@ -31,7 +31,7 @@ namespace dotnetrpg.Services.WeaponService
       try
       {
         var character = await _dataContext.Characters
-          .FirstOrDefaultAsync(c => c.Id == newWeapon.CharacterId && c.UserId == _userContext.GetCurrentUserId());
+          .FirstOrDefaultAsync(c => c.Id == newWeapon.CharacterId && c.User.Id == _userContext.GetCurrentUserId());
 
         if (character == null)
         {
