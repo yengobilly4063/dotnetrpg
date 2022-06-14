@@ -30,6 +30,7 @@ namespace dotnetrpg.Services.CharacterService
     public async Task<ServiceResponse<List<GetCharacterDto>>> GetAllCharacters()
     {
       var dbCharacters = await _dataContext.Characters
+        .Include(c => c.User)
         .Include(c => c.Skills)
         .Include(c => c.Weapon)
         .Where(c => c.User.Id == GetUserId()).ToListAsync();
@@ -40,6 +41,7 @@ namespace dotnetrpg.Services.CharacterService
     public async Task<ServiceResponse<GetCharacterDto>> GetCharacterById(int Id)
     {
       var dbCharacter = await _dataContext.Characters
+        .Include(c => c.User)
         .Include(c => c.Skills)
         .Include(c => c.Weapon)
         .FirstOrDefaultAsync(c => c.Id == Id && c.User.Id == GetUserId());
@@ -54,6 +56,7 @@ namespace dotnetrpg.Services.CharacterService
       _dataContext.Characters.Add(resolvedCharacter);
       await _dataContext.SaveChangesAsync();
       var mappedCharacterResponse = await _dataContext.Characters
+        .Include(c => c.User)
         .Include(c => c.Weapon)
         .Where(c => c.User.Id == GetUserId())
         .Select(c => _mapper.Map<GetCharacterDto>(c)).ToListAsync();
@@ -91,7 +94,6 @@ namespace dotnetrpg.Services.CharacterService
       }
       catch (Exception ex)
       {
-        Console.WriteLine(ex.ToString());
         serviceResponse.Success = false;
         serviceResponse.Message = ex.ToString();
       }
@@ -104,6 +106,7 @@ namespace dotnetrpg.Services.CharacterService
       try
       {
         var character = await _dataContext.Characters
+          .Include(c => c.User)
           .Include(c => c.Weapon)
           .FirstOrDefaultAsync(c => c.Id == Id && c.User.Id == GetUserId());
         if (character != null)
@@ -133,6 +136,7 @@ namespace dotnetrpg.Services.CharacterService
       try
       {
         var character = await _dataContext.Characters
+          .Include(c => c.User)
           .Include(c => c.Weapon)
           .Include(c => c.Skills)
           .FirstOrDefaultAsync(c => c.Id == newCharacterSkill.CharacterId && c.User.Id == GetUserId());
